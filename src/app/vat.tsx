@@ -4,8 +4,10 @@ import { calculateVat, type VatMode } from '@/calculators/vat';
 import { NumberField } from '@/components/number-field';
 import { ResultPanel, ShareButton } from '@/components/result-panel';
 import { Screen } from '@/components/screen';
+import { ScreenHeader } from '@/components/screen-header';
 import { SegmentedControl } from '@/components/segmented-control';
 import { ThemedText } from '@/components/themed-text';
+import { CALCULATOR_VISUALS } from '@/constants/calculators';
 import { useApp } from '@/context/app-context';
 import { useHistorySave } from '@/hooks/use-history-save';
 import { useShareResult } from '@/hooks/use-share-result';
@@ -21,6 +23,7 @@ export default function VatScreen() {
   const [rate, setRate] = useState(String(settings.vatRatePercent));
   const [mode, setMode] = useState<VatMode>('add');
   const hydrated = useRef(false);
+  const visual = CALCULATOR_VISUALS.vat;
 
   useEffect(() => {
     if (ready && !hydrated.current) {
@@ -55,6 +58,8 @@ export default function VatScreen() {
 
   return (
     <Screen>
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.vat.subtitle} tone={visual.tone} />
+
       <SegmentedControl
         value={mode}
         onChange={setMode}
@@ -81,29 +86,37 @@ export default function VatScreen() {
         error={Boolean(rateHint)}
       />
 
-      {result ? (
-        <ResultPanel
-          title={copy.common.results}
-          rows={[
-            { label: copy.vat.rateLabel, value: formatPercent(result.rate, language) },
-            { label: copy.vat.net, value: formatMoney(result.net, language) },
-            { label: copy.vat.vat, value: formatMoney(result.vat, language) },
-            {
-              label: copy.vat.gross,
-              value: formatMoney(result.gross, language),
-              emphasize: true,
-            },
-          ]}
-          footer={
-            draft ? (
-              <ShareButton
-                label={copy.common.share}
-                onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
-              />
-            ) : null
-          }
-        />
-      ) : null}
+      <ResultPanel
+        title={copy.common.breakdown}
+        emptyLabel={copy.common.enterAmount}
+        hero={
+          result
+            ? {
+                label: mode === 'add' ? copy.vat.gross : copy.vat.net,
+                value: formatMoney(mode === 'add' ? result.gross : result.net, language),
+              }
+            : undefined
+        }
+        rows={
+          result
+            ? [
+                { label: copy.vat.rateLabel, value: formatPercent(result.rate, language) },
+                ...(mode === 'add'
+                  ? [{ label: copy.vat.net, value: formatMoney(result.net, language) }]
+                  : [{ label: copy.vat.gross, value: formatMoney(result.gross, language) }]),
+                { label: copy.vat.vat, value: formatMoney(result.vat, language) },
+              ]
+            : []
+        }
+        footer={
+          draft ? (
+            <ShareButton
+              label={copy.common.share}
+              onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
+            />
+          ) : null
+        }
+      />
 
       <ThemedText type="small" themeColor="textSecondary">
         {copy.common.estimateNote}

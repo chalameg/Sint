@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { ReactNode } from 'react';
 
@@ -17,13 +17,17 @@ export function Screen({ children, padded = true, includeTopSafeArea = false }: 
 
   return (
     <ThemedView style={styles.root}>
+      <View pointerEvents="none" style={styles.ambient} accessibilityElementsHidden>
+        <View style={[styles.orb, styles.orbPrimary, { backgroundColor: theme.primary }]} />
+        <View style={[styles.orb, styles.orbAccent, { backgroundColor: theme.accent }]} />
+      </View>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={[styles.content, padded && styles.padded]}
-          style={{ backgroundColor: theme.background }}>
+          style={styles.flex}>
           <SafeAreaView edges={includeTopSafeArea ? ['top', 'bottom'] : ['bottom']} style={styles.inner}>
             {children}
           </SafeAreaView>
@@ -40,6 +44,26 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  ambient: {
+    ...StyleSheet.absoluteFill,
+    overflow: 'hidden',
+  },
+  orb: {
+    position: 'absolute',
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+  },
+  orbPrimary: {
+    top: -120,
+    right: -80,
+    opacity: 0.08,
+  },
+  orbAccent: {
+    bottom: 80,
+    left: -100,
+    opacity: 0.07,
+  },
   content: {
     flexGrow: 1,
     width: '100%',
@@ -50,10 +74,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.six,
-    gap: Spacing.three,
   },
   inner: {
     flexGrow: 1,
-    gap: Spacing.three,
+    gap: Spacing.four,
   },
 });

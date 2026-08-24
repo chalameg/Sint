@@ -3,6 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppProvider, useApp } from '@/context/app-context';
@@ -13,6 +14,7 @@ SplashScreen.preventAutoHideAsync();
 function RootNavigator() {
   const { ready, copy } = useApp();
   const theme = useTheme();
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (ready) {
@@ -23,6 +25,7 @@ function RootNavigator() {
   return (
     <Stack
       screenOptions={{
+        animation: reduceMotion ? 'none' : 'slide_from_right',
         headerShadowVisible: false,
         headerTintColor: theme.primary,
         headerStyle: { backgroundColor: theme.background },

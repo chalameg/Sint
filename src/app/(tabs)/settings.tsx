@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
+import { GlassSurface } from '@/components/glass-surface';
 import { NumberField } from '@/components/number-field';
 import { Screen } from '@/components/screen';
 import { SegmentedControl } from '@/components/segmented-control';
@@ -38,7 +39,7 @@ export default function SettingsScreen() {
 
   return (
     <Screen>
-      <View style={styles.block}>
+      <GlassSurface strong style={styles.card}>
         <ThemedText type="label" themeColor="textSecondary">
           {copy.settings.language}
         </ThemedText>
@@ -47,9 +48,9 @@ export default function SettingsScreen() {
           onChange={(next) => void setLanguage(next)}
           options={languageOptions}
         />
-      </View>
+      </GlassSurface>
 
-      <View style={styles.block}>
+      <GlassSurface strong style={styles.card}>
         <ThemedText type="label" themeColor="textSecondary">
           {copy.settings.defaults}
         </ThemedText>
@@ -67,9 +68,9 @@ export default function SettingsScreen() {
             }
           }}
         />
-      </View>
+      </GlassSurface>
 
-      <View style={styles.block}>
+      <GlassSurface strong style={styles.card}>
         <ThemedText type="label" themeColor="textSecondary">
           {copy.settings.taxableMode}
         </ThemedText>
@@ -84,9 +85,9 @@ export default function SettingsScreen() {
         <ThemedText type="small" themeColor="textSecondary">
           {copy.salary.taxableHint}
         </ThemedText>
-      </View>
+      </GlassSurface>
 
-      <View style={styles.block}>
+      <GlassSurface elevated={false} style={styles.card}>
         <ThemedText type="label" themeColor="textSecondary">
           {copy.settings.about}
         </ThemedText>
@@ -96,13 +97,14 @@ export default function SettingsScreen() {
         <ThemedText type="small" themeColor="textSecondary">
           {copy.settings.localNote}
         </ThemedText>
-      </View>
+      </GlassSurface>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  block: {
+  card: {
+    padding: Spacing.three,
     gap: Spacing.two,
   },
 });

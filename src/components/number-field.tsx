@@ -1,5 +1,7 @@
 import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import { useState } from 'react';
 
+import { GlassSurface } from '@/components/glass-surface';
 import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -26,18 +28,20 @@ export function NumberField({
   editable,
 }: NumberFieldProps) {
   const theme = useTheme();
+  const [focused, setFocused] = useState(false);
 
   return (
     <View style={styles.wrap}>
       <ThemedText type="label" themeColor="textSecondary">
         {label}
       </ThemedText>
-      <View
+      <GlassSurface
+        strong
+        elevated={false}
         style={[
           styles.field,
           {
-            backgroundColor: theme.backgroundElement,
-            borderColor: error ? theme.danger : theme.border,
+            borderColor: error ? theme.danger : focused ? theme.primary : theme.border,
           },
         ]}>
         <TextInput
@@ -49,6 +53,9 @@ export function NumberField({
           inputMode="decimal"
           autoFocus={autoFocus}
           editable={editable}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          accessibilityLabel={label}
           style={[styles.input, { color: theme.text }]}
         />
         {suffix ? (
@@ -56,7 +63,7 @@ export function NumberField({
             {suffix}
           </ThemedText>
         ) : null}
-      </View>
+      </GlassSurface>
       {hint ? (
         <ThemedText type="small" style={error ? { color: theme.danger } : undefined} themeColor="textSecondary">
           {hint}
@@ -68,12 +75,11 @@ export function NumberField({
 
 const styles = StyleSheet.create({
   wrap: {
-    gap: Spacing.one,
+    gap: Spacing.two,
   },
   field: {
-    minHeight: 64,
+    minHeight: 68,
     borderRadius: Radius.md,
-    borderWidth: 1,
     paddingHorizontal: Spacing.three,
     flexDirection: 'row',
     alignItems: 'center',
@@ -81,13 +87,13 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '700',
     paddingVertical: Spacing.two,
     fontVariant: ['tabular-nums'],
   },
   suffix: {
-    minWidth: 36,
+    minWidth: 40,
     textAlign: 'right',
   },
 });

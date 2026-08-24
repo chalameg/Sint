@@ -4,8 +4,10 @@ import { calculateSavings } from '@/calculators/savings';
 import { NumberField } from '@/components/number-field';
 import { ResultPanel, ShareButton } from '@/components/result-panel';
 import { Screen } from '@/components/screen';
+import { ScreenHeader } from '@/components/screen-header';
 import { SegmentedControl } from '@/components/segmented-control';
 import { ThemedText } from '@/components/themed-text';
+import { CALCULATOR_VISUALS } from '@/constants/calculators';
 import { useApp } from '@/context/app-context';
 import { useHistorySave } from '@/hooks/use-history-save';
 import { useShareResult } from '@/hooks/use-share-result';
@@ -23,6 +25,7 @@ export default function SavingsScreen() {
   const [duration, setDuration] = useState('');
   const [annualReturn, setAnnualReturn] = useState('');
   const [unit, setUnit] = useState<DurationUnit>('months');
+  const visual = CALCULATOR_VISUALS.savings;
 
   const initialHint = hintForAmount(initial, copy);
   const monthlyHint = hintForAmount(monthly, copy);
@@ -64,6 +67,8 @@ export default function SavingsScreen() {
 
   return (
     <Screen>
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.savings.subtitle} tone={visual.tone} />
+
       <NumberField
         label={copy.savings.initialLabel}
         value={initial}
@@ -107,34 +112,40 @@ export default function SavingsScreen() {
         error={Boolean(returnHint)}
       />
 
-      {result ? (
-        <ResultPanel
-          title={copy.common.results}
-          rows={[
-            {
-              label: copy.savings.finalAmount,
-              value: formatMoney(result.finalAmount, language),
-              emphasize: true,
-            },
-            {
-              label: copy.savings.totalContributed,
-              value: formatMoney(result.totalContributed, language),
-            },
-            {
-              label: copy.savings.estimatedGain,
-              value: formatMoney(result.estimatedGain, language),
-            },
-          ]}
-          footer={
-            draft ? (
-              <ShareButton
-                label={copy.common.share}
-                onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
-              />
-            ) : null
-          }
-        />
-      ) : null}
+      <ResultPanel
+        title={copy.common.breakdown}
+        emptyLabel={copy.common.enterAmount}
+        hero={
+          result
+            ? {
+                label: copy.savings.finalAmount,
+                value: formatMoney(result.finalAmount, language),
+              }
+            : undefined
+        }
+        rows={
+          result
+            ? [
+                {
+                  label: copy.savings.totalContributed,
+                  value: formatMoney(result.totalContributed, language),
+                },
+                {
+                  label: copy.savings.estimatedGain,
+                  value: formatMoney(result.estimatedGain, language),
+                },
+              ]
+            : []
+        }
+        footer={
+          draft ? (
+            <ShareButton
+              label={copy.common.share}
+              onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
+            />
+          ) : null
+        }
+      />
 
       <ThemedText type="small" themeColor="textSecondary">
         {copy.common.estimateNote}
