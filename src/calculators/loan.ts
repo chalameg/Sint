@@ -1,5 +1,5 @@
 import { durationToMonths, type DurationUnit } from '@/utils/duration';
-import { roundCurrency } from '@/utils/number';
+import { isFiniteDurationMonths, isFiniteMoney, isFiniteRatePercent, roundCurrency } from '@/utils/number';
 
 export type { DurationUnit };
 
@@ -27,14 +27,14 @@ export type LoanResult = {
 export function calculateLoan(input: LoanInput): LoanResult | null {
   const principal = input.principal;
   const months = durationToMonths(input.duration, input.durationUnit);
-  const annualRate = input.annualRatePercent / 100;
+  const annualRatePercent = input.annualRatePercent;
 
-  if (!Number.isFinite(principal) || principal <= 0) return null;
-  if (!Number.isFinite(months) || months <= 0) return null;
-  if (!Number.isFinite(annualRate) || annualRate < 0) return null;
+  if (!isFiniteMoney(principal) || principal <= 0) return null;
+  if (!isFiniteDurationMonths(months)) return null;
+  if (!isFiniteRatePercent(annualRatePercent)) return null;
 
   const n = months;
-  const monthlyRate = annualRate / 12;
+  const monthlyRate = annualRatePercent / 100 / 12;
 
   let monthlyPayment: number;
   if (monthlyRate === 0) {

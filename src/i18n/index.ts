@@ -36,9 +36,11 @@ export const en = {
     months: 'Months',
     years: 'Years',
     optional: 'Optional',
-    estimateNote: 'Estimates only. Not tax or financial advice.',
+    estimateNote: 'Estimates only. Not tax or financial advice. Verify with current payroll and tax guidance.',
     results: 'Results',
     inputs: 'Inputs',
+    enterValidAmount: 'Enter a valid amount.',
+    amountTooLarge: 'That amount is too large for this calculator.',
   },
   salary: {
     title: 'Salary calculator',
@@ -48,8 +50,13 @@ export const en = {
     employerPension: 'Employer pension',
     netTakeHome: 'Estimated net take-home',
     effectiveRate: 'Effective tax rate',
+    taxableMode: 'Taxable income',
+    taxableGross: 'Gross',
+    taxableAfterPension: 'After pension',
+    taxableIncome: 'Amount taxed',
+    taxableHint: 'Some payrolls tax the full salary; others tax salary after the 7% employee pension.',
     disclaimer:
-      'Uses current Ethiopian employment tax bands and a 7% employee pension on the amount entered. Employer pension (11%) is shown for context and is not deducted from take-home.',
+      'Uses Ethiopian employment tax bands and a 7% employee pension on the amount entered. Employer pension (11%) is shown for context and is not deducted from take-home. Results are estimates — verify with current payroll and tax guidance.',
   },
   loan: {
     title: 'Loan calculator',
@@ -94,6 +101,7 @@ export const en = {
     amharic: 'አማርኛ',
     defaults: 'Defaults',
     defaultVat: 'Default VAT rate',
+    taxableMode: 'Taxable income',
     about: 'About rates',
     aboutBody:
       'Employment tax bands follow Proclamation No. 1395/2025. Employee pension is 7%. VAT defaults to 15%. Update these in src/config/ethiopia.ts when the law changes.',
@@ -151,9 +159,11 @@ export const am: TranslationDict = {
     months: 'ወራት',
     years: 'ዓመታት',
     optional: 'አማራጭ',
-    estimateNote: 'ግምቶች ብቻ ናቸው። የግብር ወይም የገንዘብ ምክር አይደለም።',
+    estimateNote: 'ግምቶች ብቻ ናቸው። የግብር ወይም የገንዘብ ምክር አይደለም። ከአሁኑ የደመወዝ/ግብር መመሪያ ጋር ያረጋግጡ።',
     results: 'ውጤቶች',
     inputs: 'ግብዓቶች',
+    enterValidAmount: 'ትክክለኛ መጠን ያስገቡ።',
+    amountTooLarge: 'ይህ መጠን ለዚህ ማስያ በጣም ትልቅ ነው።',
   },
   salary: {
     title: 'የደመወዝ ማስያ',
@@ -163,8 +173,13 @@ export const am: TranslationDict = {
     employerPension: 'የአሰሪ ጡረታ',
     netTakeHome: 'የሚቀረው ደመወዝ',
     effectiveRate: 'ውጤታማ የግብር መጠን',
+    taxableMode: 'የሚገብር ገቢ',
+    taxableGross: 'ጠቅላላ',
+    taxableAfterPension: 'ከጡረታ በኋላ',
+    taxableIncome: 'የተገበረበት መጠን',
+    taxableHint: 'አንዳንድ የደመወዝ ስሌቶች ጠቅላላውን ይገብራሉ፤ ሌሎች ደግሞ ከ7% የሰራተኛ ጡረታ በኋላ።',
     disclaimer:
-      'አሁን ያሉ የኢትዮጵያ የደመወዝ ግብር ባንዶችን እና በገባው መጠን ላይ 7% የሰራተኛ ጡረታን ይጠቀማል። የአሰሪ ጡረታ (11%) ለማብራሪያ ብቻ ነው የሚታየው።',
+      'የኢትዮጵያ የደመወዝ ግብር ባንዶችን እና በገባው መጠን ላይ 7% የሰራተኛ ጡረታን ይጠቀማል። የአሰሪ ጡረታ (11%) ለማብራሪያ ብቻ ነው። ውጤቶቹ ግምት ናቸው — ከአሁኑ የደመወዝ/ግብር መመሪያ ጋር ያረጋግጡ።',
   },
   loan: {
     title: 'የብድር ማስያ',
@@ -209,6 +224,7 @@ export const am: TranslationDict = {
     amharic: 'አማርኛ',
     defaults: 'ነባሪዎች',
     defaultVat: 'ነባሪ የተ.እ.ታ መጠን',
+    taxableMode: 'የሚገብር ገቢ',
     about: 'ስለ ተመኖች',
     aboutBody:
       'የደመወዝ ግብር ባንዶች ከአዋጅ ቁጥር 1395/2025 ይከተላሉ። የሰራተኛ ጡረታ 7% ነው። ተ.እ.ታ ነባሪው 15% ነው። ሕጉ ሲቀየር src/config/ethiopia.ts ውስጥ ያዘምኑ።',

@@ -1,5 +1,5 @@
 import { DEFAULT_VAT_RATE } from '@/config/ethiopia';
-import { roundCurrency } from '@/utils/number';
+import { isFiniteMoney, isFiniteRatePercent, roundCurrency } from '@/utils/number';
 
 export type VatMode = 'add' | 'remove';
 
@@ -19,31 +19,22 @@ export type VatResult = {
 
 export function calculateVat(input: VatInput): VatResult | null {
   const amount = input.amount;
-  const rate =
-    input.ratePercent === undefined ? DEFAULT_VAT_RATE : input.ratePercent / 100;
+  const ratePercent =
+    input.ratePercent === undefined ? DEFAULT_VAT_RATE * 100 : input.ratePercent;
+  const rate = ratePercent / 100;
 
-  if (!Number.isFinite(amount) || amount < 0) return null;
-  if (!Number.isFinite(rate) || rate < 0) return null;
+  if (!isFiniteMoney(amount)) return null;
+  if (!isFiniteRatePercent(ratePercent)) return null;
 
   if (input.mode === 'add') {
-    const vat = roundCurrency(amount * rate);
-    const gross = roundCurrency(amount + vat);
-    return {
-      mode: 'add',
-      rate,
-      net: roundCurrency(amount),
-      vat,
-      gross,
-    };
+    const net = roundCurrency(amount);
+    const gross = roundCurrency(amount * (1 + rate));
+    const vat = roundCurrency(gross - net);
+    return { mode: 'add', rate, net, vat, gross };
   }
 
+  const gross = roundCurrency(amount);
   const net = roundCurrency(amount / (1 + rate));
-  const vat = roundCurrency(amount - net);
-  return {
-    mode: 'remove',
-    rate,
-    net,
-    vat,
-    gross: roundCurrency(amount),
-  };
+  const vat = roundCurrency(gross - net);
+  return { mode: 'remove', rate, net, vat, gross };
 }

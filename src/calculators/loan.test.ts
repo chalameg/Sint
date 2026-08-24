@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { calculateLoan } from '@/calculators/loan';
+import { MAX_MONEY_AMOUNT, MAX_RATE_PERCENT } from '@/utils/number';
 
 describe('calculateLoan', () => {
   it('uses the standard amortization formula', () => {
@@ -32,7 +33,18 @@ describe('calculateLoan', () => {
     expect(result!.totalRepayment).toBe(12_000);
   });
 
-  it('returns null for invalid duration or principal', () => {
+  it('converts years to monthly payments', () => {
+    const result = calculateLoan({
+      principal: 24_000,
+      annualRatePercent: 0,
+      duration: 2,
+      durationUnit: 'years',
+    });
+    expect(result!.months).toBe(24);
+    expect(result!.monthlyPayment).toBe(1000);
+  });
+
+  it('returns null for invalid principal, duration, or rate', () => {
     expect(
       calculateLoan({
         principal: 0,
@@ -43,9 +55,41 @@ describe('calculateLoan', () => {
     ).toBeNull();
     expect(
       calculateLoan({
+        principal: -1000,
+        annualRatePercent: 10,
+        duration: 12,
+        durationUnit: 'months',
+      }),
+    ).toBeNull();
+    expect(
+      calculateLoan({
         principal: 1000,
         annualRatePercent: 10,
         duration: 0,
+        durationUnit: 'months',
+      }),
+    ).toBeNull();
+    expect(
+      calculateLoan({
+        principal: 1000,
+        annualRatePercent: -1,
+        duration: 12,
+        durationUnit: 'months',
+      }),
+    ).toBeNull();
+    expect(
+      calculateLoan({
+        principal: MAX_MONEY_AMOUNT + 1,
+        annualRatePercent: 10,
+        duration: 12,
+        durationUnit: 'months',
+      }),
+    ).toBeNull();
+    expect(
+      calculateLoan({
+        principal: 1000,
+        annualRatePercent: MAX_RATE_PERCENT + 1,
+        duration: 12,
         durationUnit: 'months',
       }),
     ).toBeNull();

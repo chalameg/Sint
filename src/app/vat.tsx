@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { calculateVat, type VatMode } from '@/calculators/vat';
 import { NumberField } from '@/components/number-field';
@@ -10,15 +10,27 @@ import { useApp } from '@/context/app-context';
 import { useHistorySave } from '@/hooks/use-history-save';
 import { useShareResult } from '@/hooks/use-share-result';
 import { formatMoney, formatPercent } from '@/utils/format';
+import { hintForAmount, hintForRate } from '@/utils/input-hint';
 import { parseAmount } from '@/utils/number';
 import { formatShareMessage } from '@/utils/summaries';
 
 export default function VatScreen() {
-  const { copy, language, settings } = useApp();
+  const { copy, language, settings, ready } = useApp();
   const share = useShareResult();
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState(String(settings.vatRatePercent));
   const [mode, setMode] = useState<VatMode>('add');
+  const hydrated = useRef(false);
+
+  useEffect(() => {
+    if (ready && !hydrated.current) {
+      hydrated.current = true;
+      setRate(String(settings.vatRatePercent));
+    }
+  }, [ready, settings.vatRatePercent]);
+
+  const amountHint = hintForAmount(amount, copy);
+  const rateHint = hintForRate(rate, copy);
 
   const result = useMemo(() => {
     const parsedAmount = parseAmount(amount);
@@ -57,12 +69,16 @@ export default function VatScreen() {
         onChangeText={setAmount}
         suffix={copy.common.etb}
         autoFocus
+        hint={amountHint}
+        error={Boolean(amountHint)}
       />
       <NumberField
         label={copy.vat.rateLabel}
         value={rate}
         onChangeText={setRate}
         suffix="%"
+        hint={rateHint}
+        error={Boolean(rateHint)}
       />
 
       {result ? (

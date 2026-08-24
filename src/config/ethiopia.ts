@@ -46,5 +46,15 @@ export const EMPLOYER_PENSION_RATE = 0.11;
 /** Default VAT rate as a decimal (15%). */
 export const DEFAULT_VAT_RATE = 0.15;
 
+/**
+ * How employment income tax is applied.
+ * - `gross`: tax the entered salary (default).
+ * - `grossMinusPension`: tax salary after the 7% employee pension.
+ * Payroll offices differ; this is an estimate either way.
+ */
+export type TaxableIncomeMode = 'gross' | 'grossMinusPension';
+
+export const DEFAULT_TAXABLE_INCOME_MODE: TaxableIncomeMode = 'gross';
+
 export const TAX_RULES_NOTE_EN =
   'Employment tax bands from Proclamation No. 1395/2025. Pension at 7% employee / 11% employer. VAT default 15%.';

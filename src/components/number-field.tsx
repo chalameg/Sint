@@ -10,6 +10,7 @@ type NumberFieldProps = {
   onChangeText: (value: string) => void;
   suffix?: string;
   hint?: string;
+  error?: boolean;
   placeholder?: string;
 } & Pick<TextInputProps, 'autoFocus' | 'editable'>;
 
@@ -19,6 +20,7 @@ export function NumberField({
   onChangeText,
   suffix,
   hint,
+  error = false,
   placeholder = '0',
   autoFocus,
   editable,
@@ -33,7 +35,10 @@ export function NumberField({
       <View
         style={[
           styles.field,
-          { backgroundColor: theme.backgroundElement, borderColor: theme.border },
+          {
+            backgroundColor: theme.backgroundElement,
+            borderColor: error ? theme.danger : theme.border,
+          },
         ]}>
         <TextInput
           value={value}
@@ -53,7 +58,7 @@ export function NumberField({
         ) : null}
       </View>
       {hint ? (
-        <ThemedText type="small" themeColor="textSecondary">
+        <ThemedText type="small" style={error ? { color: theme.danger } : undefined} themeColor="textSecondary">
           {hint}
         </ThemedText>
       ) : null}

@@ -1,12 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
-import { dictionaries } from '@/i18n';
+import { dictionaries, type Language } from '@/i18n';
 import { clearHistory as clearStoredHistory, loadHistory, mergeHistory, saveHistory } from '@/storage/history';
 import { DEFAULT_SETTINGS, type AppSettings } from '@/storage/keys';
 import { loadSettings, saveSettings } from '@/storage/settings';
 import type { AppContextValue } from '@/types/app';
 import type { HistoryDraft } from '@/types/history';
-import type { Language } from '@/i18n';
+import type { TaxableIncomeMode } from '@/config/ethiopia';
 
 const AppContext = createContext<AppContextValue | null>(null);
 
@@ -53,6 +53,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [persistSettings, settings],
   );
 
+  const setTaxableIncomeMode = useCallback(
+    async (taxableIncomeMode: TaxableIncomeMode) => {
+      await persistSettings({ ...settings, taxableIncomeMode });
+    },
+    [persistSettings, settings],
+  );
+
   const saveCalculation = useCallback(async (draft: HistoryDraft) => {
     setHistory((current) => {
       const next = mergeHistory(current, draft);
@@ -74,11 +81,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       language: settings.language,
       setLanguage,
       setVatRatePercent,
+      setTaxableIncomeMode,
       history,
       saveCalculation,
       clearHistory,
     }),
-    [clearHistory, history, ready, saveCalculation, setLanguage, setVatRatePercent, settings],
+    [clearHistory, history, ready, saveCalculation, setLanguage, setTaxableIncomeMode, setVatRatePercent, settings],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -9,6 +9,7 @@ export type AppContextValue = {
   language: Language;
   setLanguage: (language: Language) => Promise<void>;
   setVatRatePercent: (vatRatePercent: number) => Promise<void>;
+  setTaxableIncomeMode: (mode: AppSettings['taxableIncomeMode']) => Promise<void>;
   history: HistoryEntry[];
   saveCalculation: (draft: HistoryDraft) => Promise<void>;
   clearHistory: () => Promise<void>;

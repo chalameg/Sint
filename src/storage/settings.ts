@@ -2,9 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { DEFAULT_SETTINGS, STORAGE_KEYS, type AppSettings } from '@/storage/keys';
 import type { Language } from '@/i18n';
+import type { TaxableIncomeMode } from '@/config/ethiopia';
 
 function isLanguage(value: unknown): value is Language {
   return value === 'en' || value === 'am';
+}
+
+function isTaxableIncomeMode(value: unknown): value is TaxableIncomeMode {
+  return value === 'gross' || value === 'grossMinusPension';
 }
 
 export async function loadSettings(): Promise<AppSettings> {
@@ -21,6 +26,9 @@ export async function loadSettings(): Promise<AppSettings> {
     return {
       language: isLanguage(parsed.language) ? parsed.language : DEFAULT_SETTINGS.language,
       vatRatePercent,
+      taxableIncomeMode: isTaxableIncomeMode(parsed.taxableIncomeMode)
+        ? parsed.taxableIncomeMode
+        : DEFAULT_SETTINGS.taxableIncomeMode,
     };
   } catch {
     return DEFAULT_SETTINGS;

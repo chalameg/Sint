@@ -11,7 +11,8 @@ import { useHistorySave } from '@/hooks/use-history-save';
 import { useShareResult } from '@/hooks/use-share-result';
 import type { DurationUnit } from '@/utils/duration';
 import { formatMoney } from '@/utils/format';
-import { parseAmount } from '@/utils/number';
+import { hintForAmount, hintForRate } from '@/utils/input-hint';
+import { MAX_DURATION_MONTHS, parseAmount } from '@/utils/number';
 import { formatShareMessage } from '@/utils/summaries';
 
 export default function LoanScreen() {
@@ -21,6 +22,11 @@ export default function LoanScreen() {
   const [rate, setRate] = useState('');
   const [duration, setDuration] = useState('');
   const [unit, setUnit] = useState<DurationUnit>('months');
+
+  const amountHint = hintForAmount(amount, copy);
+  const rateHint = hintForRate(rate, copy);
+  const durationMax = unit === 'years' ? MAX_DURATION_MONTHS / 12 : MAX_DURATION_MONTHS;
+  const durationHint = hintForAmount(duration, copy, durationMax);
 
   const result = useMemo(() => {
     const principal = parseAmount(amount);
@@ -58,17 +64,24 @@ export default function LoanScreen() {
         onChangeText={setAmount}
         suffix={copy.common.etb}
         autoFocus
+        hint={amountHint}
+        error={Boolean(amountHint)}
       />
       <NumberField
         label={copy.loan.rateLabel}
         value={rate}
         onChangeText={setRate}
         suffix="%"
+        hint={rateHint}
+        error={Boolean(rateHint)}
       />
       <NumberField
         label={copy.loan.durationLabel}
         value={duration}
         onChangeText={setDuration}
+        suffix={unit === 'years' ? copy.common.years : copy.common.months}
+        hint={durationHint}
+        error={Boolean(durationHint)}
       />
       <SegmentedControl
         value={unit}

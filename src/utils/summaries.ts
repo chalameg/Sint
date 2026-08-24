@@ -33,6 +33,12 @@ export function formatShareMessage(
       return [
         heading,
         `${copy.salary.grossLabel}: ${formatMoney(entry.result.grossMonthly, language)}`,
+        `${copy.salary.taxableMode}: ${
+          entry.result.taxableIncomeMode === 'grossMinusPension'
+            ? copy.salary.taxableAfterPension
+            : copy.salary.taxableGross
+        }`,
+        `${copy.salary.taxableIncome}: ${formatMoney(entry.result.taxableIncome, language)}`,
         `${copy.salary.incomeTax}: ${formatMoney(entry.result.incomeTax, language)}`,
         `${copy.salary.employeePension}: ${formatMoney(entry.result.employeePension, language)}`,
         `${copy.salary.netTakeHome}: ${formatMoney(entry.result.netTakeHome, language)}`,

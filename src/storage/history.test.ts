@@ -1,19 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
+import { calculateSalary } from '@/calculators/salary';
 import { mergeHistory } from '@/storage/history';
 import type { HistoryDraft } from '@/types/history';
 
+const salaryResult = calculateSalary({ grossMonthly: 15000 });
+if (!salaryResult) {
+  throw new Error('Expected a salary result for the history fixture');
+}
+
 const salaryDraft: HistoryDraft = {
   kind: 'salary',
-  input: { grossMonthly: 15000 },
-  result: {
-    grossMonthly: 15000,
-    incomeTax: 3200,
-    employeePension: 1050,
-    employerPension: 1650,
-    netTakeHome: 10750,
-    effectiveTaxRate: 3200 / 15000,
-  },
+  input: { grossMonthly: 15000, taxableIncomeMode: 'gross' },
+  result: salaryResult,
 };
 
 describe('mergeHistory', () => {
@@ -30,7 +29,7 @@ describe('mergeHistory', () => {
     const first = mergeHistory([], salaryDraft);
     const updated = mergeHistory(first, {
       ...salaryDraft,
-      input: { grossMonthly: 20000 },
+      input: { grossMonthly: 20000, taxableIncomeMode: 'gross' },
       result: { ...salaryDraft.result, grossMonthly: 20000 },
     });
 

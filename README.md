@@ -6,7 +6,7 @@ Sint? is local-first: all calculations and history stay on the device. There is 
 
 ## Calculators
 
-- **Salary** — Ethiopian employment income tax, employee pension, and estimated net take-home
+- **Salary** — Ethiopian employment income tax, employee pension, and estimated net take-home. Tax can be applied to gross pay or to gross minus pension.
 - **Loan** — monthly payment, total repayment, and total interest
 - **VAT** — add or remove VAT (default 15%, overridable)
 - **Savings** — final amount, total contributed, and estimated gain

@@ -11,7 +11,8 @@ import { useHistorySave } from '@/hooks/use-history-save';
 import { useShareResult } from '@/hooks/use-share-result';
 import type { DurationUnit } from '@/utils/duration';
 import { formatMoney } from '@/utils/format';
-import { parseAmount } from '@/utils/number';
+import { hintForAmount, hintForRate } from '@/utils/input-hint';
+import { MAX_DURATION_MONTHS, parseAmount } from '@/utils/number';
 import { formatShareMessage } from '@/utils/summaries';
 
 export default function SavingsScreen() {
@@ -22,6 +23,12 @@ export default function SavingsScreen() {
   const [duration, setDuration] = useState('');
   const [annualReturn, setAnnualReturn] = useState('');
   const [unit, setUnit] = useState<DurationUnit>('months');
+
+  const initialHint = hintForAmount(initial, copy);
+  const monthlyHint = hintForAmount(monthly, copy);
+  const durationMax = unit === 'years' ? MAX_DURATION_MONTHS / 12 : MAX_DURATION_MONTHS;
+  const durationHint = hintForAmount(duration, copy, durationMax);
+  const returnHint = annualReturn.trim() === '' ? undefined : hintForRate(annualReturn, copy);
 
   const result = useMemo(() => {
     const initialAmount = parseAmount(initial) ?? 0;
@@ -63,17 +70,24 @@ export default function SavingsScreen() {
         onChangeText={setInitial}
         suffix={copy.common.etb}
         autoFocus
+        hint={initialHint}
+        error={Boolean(initialHint)}
       />
       <NumberField
         label={copy.savings.monthlyLabel}
         value={monthly}
         onChangeText={setMonthly}
         suffix={copy.common.etb}
+        hint={monthlyHint}
+        error={Boolean(monthlyHint)}
       />
       <NumberField
         label={copy.savings.durationLabel}
         value={duration}
         onChangeText={setDuration}
+        suffix={unit === 'years' ? copy.common.years : copy.common.months}
+        hint={durationHint}
+        error={Boolean(durationHint)}
       />
       <SegmentedControl
         value={unit}
@@ -89,6 +103,8 @@ export default function SavingsScreen() {
         onChangeText={setAnnualReturn}
         suffix="%"
         placeholder="0"
+        hint={returnHint}
+        error={Boolean(returnHint)}
       />
 
       {result ? (

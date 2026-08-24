@@ -1,5 +1,5 @@
 import { durationToMonths, type DurationUnit } from '@/utils/duration';
-import { roundCurrency } from '@/utils/number';
+import { isFiniteDurationMonths, isFiniteMoney, isFiniteRatePercent, roundCurrency } from '@/utils/number';
 
 export type SavingsInput = {
   initialAmount: number;
@@ -19,21 +19,22 @@ export type SavingsResult = {
 
 /**
  * Future value of an initial amount plus end-of-month deposits,
- * compounded monthly. When the return rate is 0, this is a simple sum.
+ * compounded monthly. When the return rate is 0:
+ * finalAmount = initialAmount + monthlySaving * months.
  */
 export function calculateSavings(input: SavingsInput): SavingsResult | null {
   const initialAmount = input.initialAmount;
   const monthlySaving = input.monthlySaving;
   const months = durationToMonths(input.duration, input.durationUnit);
-  const annualReturn = (input.annualReturnPercent ?? 0) / 100;
+  const annualReturnPercent = input.annualReturnPercent ?? 0;
 
-  if (!Number.isFinite(initialAmount) || initialAmount < 0) return null;
-  if (!Number.isFinite(monthlySaving) || monthlySaving < 0) return null;
-  if (!Number.isFinite(months) || months <= 0) return null;
-  if (!Number.isFinite(annualReturn) || annualReturn < 0) return null;
+  if (!isFiniteMoney(initialAmount)) return null;
+  if (!isFiniteMoney(monthlySaving)) return null;
+  if (!isFiniteDurationMonths(months)) return null;
+  if (!isFiniteRatePercent(annualReturnPercent)) return null;
   if (initialAmount === 0 && monthlySaving === 0) return null;
 
-  const monthlyRate = annualReturn / 12;
+  const monthlyRate = annualReturnPercent / 100 / 12;
   const totalContributed = initialAmount + monthlySaving * months;
 
   let finalAmount: number;
@@ -47,7 +48,7 @@ export function calculateSavings(input: SavingsInput): SavingsResult | null {
     finalAmount = initialFuture + annuityFuture;
   }
 
-  if (!Number.isFinite(finalAmount)) return null;
+  if (!Number.isFinite(finalAmount) || finalAmount > Number.MAX_SAFE_INTEGER) return null;
 
   return {
     months,

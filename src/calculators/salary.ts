@@ -1,13 +1,16 @@
 import {
+  DEFAULT_TAXABLE_INCOME_MODE,
   EMPLOYEE_PENSION_RATE,
   EMPLOYER_PENSION_RATE,
   EMPLOYMENT_INCOME_TAX_BANDS,
   type IncomeTaxBand,
+  type TaxableIncomeMode,
 } from '@/config/ethiopia';
-import { roundCurrency } from '@/utils/number';
+import { isFiniteMoney, roundCurrency } from '@/utils/number';
 
 export type SalaryInput = {
   grossMonthly: number;
+  taxableIncomeMode?: TaxableIncomeMode;
   bands?: readonly IncomeTaxBand[];
   employeePensionRate?: number;
   employerPensionRate?: number;
@@ -15,6 +18,8 @@ export type SalaryInput = {
 
 export type SalaryResult = {
   grossMonthly: number;
+  taxableIncome: number;
+  taxableIncomeMode: TaxableIncomeMode;
   incomeTax: number;
   employeePension: number;
   employerPension: number;
@@ -23,14 +28,14 @@ export type SalaryResult = {
 };
 
 /**
- * Progressive employment income tax on a monthly gross salary.
+ * Progressive employment income tax on a monthly amount.
  * Each band taxes only the slice of income that falls inside it.
  */
 export function calculateEmploymentIncomeTax(
-  grossMonthly: number,
+  monthlyAmount: number,
   bands: readonly IncomeTaxBand[] = EMPLOYMENT_INCOME_TAX_BANDS,
 ): number {
-  if (!Number.isFinite(grossMonthly) || grossMonthly <= 0) {
+  if (!Number.isFinite(monthlyAmount) || monthlyAmount <= 0) {
     return 0;
   }
 
@@ -38,10 +43,10 @@ export function calculateEmploymentIncomeTax(
   let previousLimit = 0;
 
   for (const band of bands) {
-    if (grossMonthly <= previousLimit) {
+    if (monthlyAmount <= previousLimit) {
       break;
     }
-    const slice = Math.min(grossMonthly, band.upTo) - previousLimit;
+    const slice = Math.min(monthlyAmount, band.upTo) - previousLimit;
     if (slice > 0) {
       tax += slice * band.rate;
     }
@@ -51,19 +56,29 @@ export function calculateEmploymentIncomeTax(
   return roundCurrency(tax);
 }
 
-export function calculateSalary(input: SalaryInput): SalaryResult {
-  const grossMonthly = roundCurrency(input.grossMonthly);
+export function calculateSalary(input: SalaryInput): SalaryResult | null {
+  const grossMonthly = input.grossMonthly;
+  if (!isFiniteMoney(grossMonthly)) return null;
+
+  const taxableIncomeMode = input.taxableIncomeMode ?? DEFAULT_TAXABLE_INCOME_MODE;
   const employeePensionRate = input.employeePensionRate ?? EMPLOYEE_PENSION_RATE;
   const employerPensionRate = input.employerPensionRate ?? EMPLOYER_PENSION_RATE;
 
-  const incomeTax = calculateEmploymentIncomeTax(grossMonthly, input.bands);
-  const employeePension = roundCurrency(Math.max(0, grossMonthly) * employeePensionRate);
-  const employerPension = roundCurrency(Math.max(0, grossMonthly) * employerPensionRate);
+  const employeePension = roundCurrency(grossMonthly * employeePensionRate);
+  const employerPension = roundCurrency(grossMonthly * employerPensionRate);
+  const taxableIncome =
+    taxableIncomeMode === 'grossMinusPension'
+      ? roundCurrency(Math.max(0, grossMonthly - employeePension))
+      : roundCurrency(grossMonthly);
+
+  const incomeTax = calculateEmploymentIncomeTax(taxableIncome, input.bands);
   const netTakeHome = roundCurrency(grossMonthly - incomeTax - employeePension);
   const effectiveTaxRate = grossMonthly > 0 ? incomeTax / grossMonthly : 0;
 
   return {
-    grossMonthly,
+    grossMonthly: roundCurrency(grossMonthly),
+    taxableIncome,
+    taxableIncomeMode,
     incomeTax,
     employeePension,
     employerPension,
