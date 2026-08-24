@@ -31,6 +31,7 @@ export default function CalculatorScreen() {
   const [mode, setMode] = useState<DisplayMode>('number');
   const [overwrite, setOverwrite] = useState(true);
   const [history, setHistory] = useState<ArithmeticHistoryEntry[]>([]);
+  const [equalsError, setEqualsError] = useState<string | null>(null);
 
   useEffect(() => {
     void loadArithmeticHistory().then(setHistory);
@@ -46,13 +47,13 @@ export default function CalculatorScreen() {
   }, [evaluated, language, mode]);
 
   const errorLabel =
-    !evaluated.ok && expression !== '0'
-      ? evaluated.error === 'div_zero'
-        ? copy.calculator.divideByZero
-        : null
-      : null;
+    equalsError ??
+    (!evaluated.ok && expression !== '0' && evaluated.error === 'div_zero'
+      ? copy.calculator.divideByZero
+      : null);
 
   const append = (next: string) => {
+    setEqualsError(null);
     setExpression((current) => {
       if (overwrite) {
         setOverwrite(false);
@@ -75,18 +76,26 @@ export default function CalculatorScreen() {
   };
 
   const onClear = () => {
+    setEqualsError(null);
     setExpression('0');
     setOverwrite(true);
   };
 
   const onDelete = () => {
+    setEqualsError(null);
     setOverwrite(false);
     setExpression((current) => (current.length <= 1 ? '0' : current.slice(0, -1)));
   };
 
   const onEquals = () => {
     const result = evaluateArithmetic(expression);
-    if (!result.ok) return;
+    if (!result.ok) {
+      setEqualsError(
+        result.error === 'div_zero' ? copy.calculator.divideByZero : copy.calculator.invalid,
+      );
+      return;
+    }
+    setEqualsError(null);
     const formatted = formatArithmeticValue(result.value);
     setHistory((current) => {
       const next = pushArithmeticHistory(current, expression, result.value);
@@ -98,6 +107,7 @@ export default function CalculatorScreen() {
   };
 
   const reuse = (entry: ArithmeticHistoryEntry) => {
+    setEqualsError(null);
     setExpression(entry.expression);
     setOverwrite(false);
   };
@@ -148,11 +158,7 @@ export default function CalculatorScreen() {
             </PressableScale>
           ))}
         </ScrollView>
-      ) : (
-        <ThemedText type="small" themeColor="textSecondary">
-          {copy.calculator.emptyHistory}
-        </ThemedText>
-      )}
+      ) : null}
 
       <View style={styles.keypad}>
         <View style={styles.row}>
@@ -196,8 +202,8 @@ export default function CalculatorScreen() {
 
 const styles = StyleSheet.create({
   display: {
-    padding: Spacing.four,
-    minHeight: 108,
+    padding: Spacing.three,
+    minHeight: 96,
     gap: Spacing.one,
   },
   expression: {
@@ -222,6 +228,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   row: {
+    flex: 1,
     flexDirection: 'row',
     gap: Spacing.two,
   },

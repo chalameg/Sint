@@ -43,7 +43,7 @@ export function KeypadKey({ label, accessibilityLabel, wide = false, tone = 'def
 const styles = StyleSheet.create({
   key: {
     flex: 1,
-    minHeight: 56,
+    minHeight: 48,
     borderRadius: Radius.md,
     alignItems: 'center',
     justifyContent: 'center',
