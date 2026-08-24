@@ -2,23 +2,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { Spacing, withAlpha } from '@/constants/theme';
 
 type ScreenHeaderProps = {
   icon: keyof typeof Ionicons.glyphMap;
   subtitle: string;
-  tone?: 'primary' | 'accent';
+  accent: string;
 };
 
-export function ScreenHeader({ icon, subtitle, tone = 'primary' }: ScreenHeaderProps) {
-  const theme = useTheme();
-  const color = tone === 'accent' ? theme.accent : theme.primary;
-
+export function ScreenHeader({ icon, subtitle, accent }: ScreenHeaderProps) {
   return (
     <View style={styles.row} accessibilityRole="header">
-      <View style={[styles.icon, { backgroundColor: tone === 'accent' ? theme.accentMuted : theme.primaryMuted }]}>
-        <Ionicons name={icon} size={18} color={color} />
+      <View style={[styles.icon, { backgroundColor: withAlpha(accent, 0.16) }]}>
+        <Ionicons name={icon} size={18} color={accent} />
       </View>
       <ThemedText type="default" themeColor="textSecondary" style={styles.copy}>
         {subtitle}

@@ -1,40 +1,53 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
 import { GlassSurface } from '@/components/glass-surface';
 import { PressableScale } from '@/components/pressable-scale';
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { Motion, Spacing, withAlpha } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 type CalculatorCardProps = {
   title: string;
   subtitle: string;
   icon: keyof typeof Ionicons.glyphMap;
-  tone?: 'primary' | 'accent';
+  accent: string;
+  delay?: number;
   onPress: () => void;
 };
 
-export function CalculatorCard({ title, subtitle, icon, tone = 'primary', onPress }: CalculatorCardProps) {
+export function CalculatorCard({
+  title,
+  subtitle,
+  icon,
+  accent,
+  delay = 0,
+  onPress,
+}: CalculatorCardProps) {
   const theme = useTheme();
-  const color = tone === 'accent' ? theme.accent : theme.primary;
-  const well = tone === 'accent' ? theme.accentMuted : theme.primaryMuted;
+  const reduceMotion = useReducedMotion();
+  const entering = reduceMotion ? undefined : FadeInDown.duration(Motion.slow).delay(delay).springify().damping(18);
 
   return (
-    <PressableScale onPress={onPress} accessibilityLabel={`${title}. ${subtitle}`} style={styles.pressable}>
-      <GlassSurface strong style={styles.card}>
-        <View style={[styles.iconWrap, { backgroundColor: well }]}>
-          <Ionicons name={icon} size={22} color={color} />
-        </View>
-        <View style={styles.copy}>
-          <ThemedText type="subtitle">{title}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {subtitle}
-          </ThemedText>
-        </View>
-        <Ionicons name="chevron-forward" size={18} color={theme.textSecondary} />
-      </GlassSurface>
-    </PressableScale>
+    <Animated.View entering={entering} style={styles.pressable}>
+      <PressableScale onPress={onPress} accessibilityLabel={`${title}. ${subtitle}`} style={styles.pressable}>
+        <GlassSurface strong style={styles.card}>
+          <View style={[styles.strip, { backgroundColor: accent }]} />
+          <View style={[styles.stripGlow, { backgroundColor: withAlpha(accent, 0.22) }]} />
+          <View style={[styles.iconWrap, { backgroundColor: withAlpha(accent, 0.16) }]}>
+            <Ionicons name={icon} size={22} color={accent} />
+          </View>
+          <View style={styles.copy}>
+            <ThemedText type="subtitle">{title}</ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              {subtitle}
+            </ThemedText>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={theme.textSecondary} />
+        </GlassSurface>
+      </PressableScale>
+    </Animated.View>
   );
 }
 
@@ -43,16 +56,33 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   card: {
-    minHeight: 92,
-    padding: Spacing.three,
+    minHeight: 84,
+    paddingVertical: 14,
+    paddingRight: Spacing.three,
+    paddingLeft: 22,
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.three,
+    overflow: 'hidden',
+  },
+  strip: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 3,
+  },
+  stripGlow: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 28,
   },
   iconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },

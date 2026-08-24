@@ -2,36 +2,48 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 're
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { ReactNode } from 'react';
 
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { Brand, MaxContentWidth, Spacing } from '@/constants/theme';
 import { ThemedView } from '@/components/themed-view';
-import { useTheme } from '@/hooks/use-theme';
 
 type ScreenProps = {
   children: ReactNode;
   padded?: boolean;
   includeTopSafeArea?: boolean;
+  scroll?: boolean;
 };
 
-export function Screen({ children, padded = true, includeTopSafeArea = false }: ScreenProps) {
-  const theme = useTheme();
+export function Screen({
+  children,
+  padded = true,
+  includeTopSafeArea = false,
+  scroll = true,
+}: ScreenProps) {
+  const body = (
+    <SafeAreaView edges={includeTopSafeArea ? ['top', 'bottom'] : ['bottom']} style={styles.inner}>
+      {children}
+    </SafeAreaView>
+  );
 
   return (
     <ThemedView style={styles.root}>
       <View style={[styles.ambient, { pointerEvents: 'none' }]} accessibilityElementsHidden>
-        <View style={[styles.orb, styles.orbPrimary, { backgroundColor: theme.primary }]} />
-        <View style={[styles.orb, styles.orbAccent, { backgroundColor: theme.accent }]} />
+        <View style={[styles.orb, styles.orbViolet]} />
+        <View style={[styles.orb, styles.orbCyan]} />
+        <View style={[styles.orb, styles.orbGraphite]} />
       </View>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[styles.content, padded && styles.padded]}
-          style={styles.flex}>
-          <SafeAreaView edges={includeTopSafeArea ? ['top', 'bottom'] : ['bottom']} style={styles.inner}>
-            {children}
-          </SafeAreaView>
-        </ScrollView>
+        {scroll ? (
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={[styles.content, padded && styles.padded]}
+            style={styles.flex}>
+            {body}
+          </ScrollView>
+        ) : (
+          <View style={[styles.flex, styles.content, padded && styles.padded]}>{body}</View>
+        )}
       </KeyboardAvoidingView>
     </ThemedView>
   );
@@ -50,19 +62,31 @@ const styles = StyleSheet.create({
   },
   orb: {
     position: 'absolute',
-    width: 280,
-    height: 280,
-    borderRadius: 140,
+    borderRadius: 999,
   },
-  orbPrimary: {
-    top: -120,
-    right: -80,
-    opacity: 0.08,
+  orbViolet: {
+    width: 340,
+    height: 340,
+    top: -140,
+    right: -90,
+    backgroundColor: Brand.primary,
+    opacity: 0.22,
   },
-  orbAccent: {
-    bottom: 80,
-    left: -100,
-    opacity: 0.07,
+  orbCyan: {
+    width: 300,
+    height: 300,
+    bottom: 40,
+    left: -120,
+    backgroundColor: Brand.secondary,
+    opacity: 0.14,
+  },
+  orbGraphite: {
+    width: 220,
+    height: 220,
+    top: 180,
+    left: 40,
+    backgroundColor: '#161922',
+    opacity: 0.9,
   },
   content: {
     flexGrow: 1,
@@ -76,7 +100,7 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.six,
   },
   inner: {
-    flexGrow: 1,
+    flex: 1,
     gap: Spacing.four,
   },
 });

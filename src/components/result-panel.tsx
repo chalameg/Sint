@@ -31,7 +31,7 @@ export function ResultPanel({ title, hero, rows, footer, emptyLabel }: ResultPan
   const layout = reduceMotion ? undefined : LinearTransition.duration(Motion.base);
 
   return (
-    <GlassSurface accent={Boolean(hero)} strong={Boolean(hero)} style={styles.card}>
+    <GlassSurface strong={Boolean(hero)} style={[styles.card, hero ? { borderColor: theme.result } : null]}>
       {hero ? (
         <Animated.View
           entering={entering}
@@ -41,7 +41,7 @@ export function ResultPanel({ title, hero, rows, footer, emptyLabel }: ResultPan
           <ThemedText type="label" themeColor="textSecondary">
             {hero.label}
           </ThemedText>
-          <ThemedText type="hero" style={{ color: theme.primary }}>
+          <ThemedText type="hero" style={{ color: theme.result }}>
             {hero.value}
           </ThemedText>
         </Animated.View>

@@ -5,7 +5,7 @@ import { GlassSurface } from '@/components/glass-surface';
 import { PressableScale } from '@/components/pressable-scale';
 import { ThemedText } from '@/components/themed-text';
 import { CALCULATOR_VISUALS } from '@/constants/calculators';
-import { Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing, withAlpha } from '@/constants/theme';
 import { useApp } from '@/context/app-context';
 import { useShareResult } from '@/hooks/use-share-result';
 import { useTheme } from '@/hooks/use-theme';
@@ -17,8 +17,6 @@ export function HistoryItem({ entry }: { entry: HistoryEntry }) {
   const theme = useTheme();
   const share = useShareResult();
   const visual = CALCULATOR_VISUALS[entry.kind];
-  const color = visual.tone === 'accent' ? theme.accent : theme.primary;
-  const well = visual.tone === 'accent' ? theme.accentMuted : theme.primaryMuted;
   const title = calculatorTitle(copy, entry.kind);
   const summary = formatHistorySummary(entry, language, copy);
 
@@ -27,8 +25,8 @@ export function HistoryItem({ entry }: { entry: HistoryEntry }) {
       onPress={() => void share(copy.appName, formatShareMessage(entry, language, copy))}
       accessibilityLabel={`${title}. ${summary}. ${copy.common.share}`}>
       <GlassSurface strong style={styles.card}>
-        <View style={[styles.iconWrap, { backgroundColor: well }]}>
-          <Ionicons name={visual.icon} size={18} color={color} />
+        <View style={[styles.iconWrap, { backgroundColor: withAlpha(visual.accent, 0.16) }]}>
+          <Ionicons name={visual.icon} size={18} color={visual.accent} />
         </View>
         <View style={styles.copy}>
           <ThemedText type="smallBold">{title}</ThemedText>
