@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
 import { CalculatorCard } from '@/components/calculator-card';
@@ -15,9 +15,10 @@ export default function HomeScreen() {
   const { copy } = useApp();
   const theme = useTheme();
   const reduceMotion = useReducedMotion();
-  const headerEntering = reduceMotion
-    ? undefined
-    : FadeInDown.duration(Motion.slow).springify().damping(18);
+  const headerEntering =
+    Platform.OS === 'web' || reduceMotion
+      ? undefined
+      : FadeInDown.duration(Motion.slow).springify().damping(18);
 
   return (
     <Screen includeTopSafeArea>
