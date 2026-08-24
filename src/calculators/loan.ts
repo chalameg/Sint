@@ -1,0 +1,61 @@
+import { durationToMonths, type DurationUnit } from '@/utils/duration';
+import { roundCurrency } from '@/utils/number';
+
+export type { DurationUnit };
+
+export type LoanInput = {
+  principal: number;
+  annualRatePercent: number;
+  duration: number;
+  durationUnit: DurationUnit;
+};
+
+export type LoanResult = {
+  principal: number;
+  monthlyRate: number;
+  months: number;
+  monthlyPayment: number;
+  totalRepayment: number;
+  totalInterest: number;
+};
+
+/**
+ * Standard fully amortized loan payment:
+ * M = P * r * (1+r)^n / ((1+r)^n - 1)
+ * When r = 0, M = P / n.
+ */
+export function calculateLoan(input: LoanInput): LoanResult | null {
+  const principal = input.principal;
+  const months = durationToMonths(input.duration, input.durationUnit);
+  const annualRate = input.annualRatePercent / 100;
+
+  if (!Number.isFinite(principal) || principal <= 0) return null;
+  if (!Number.isFinite(months) || months <= 0) return null;
+  if (!Number.isFinite(annualRate) || annualRate < 0) return null;
+
+  const n = months;
+  const monthlyRate = annualRate / 12;
+
+  let monthlyPayment: number;
+  if (monthlyRate === 0) {
+    monthlyPayment = principal / n;
+  } else {
+    const factor = Math.pow(1 + monthlyRate, n);
+    if (!Number.isFinite(factor) || factor <= 1) return null;
+    monthlyPayment = (principal * monthlyRate * factor) / (factor - 1);
+  }
+
+  if (!Number.isFinite(monthlyPayment)) return null;
+
+  const totalRepayment = monthlyPayment * n;
+  const totalInterest = totalRepayment - principal;
+
+  return {
+    principal: roundCurrency(principal),
+    monthlyRate,
+    months: n,
+    monthlyPayment: roundCurrency(monthlyPayment),
+    totalRepayment: roundCurrency(totalRepayment),
+    totalInterest: roundCurrency(totalInterest),
+  };
+}
