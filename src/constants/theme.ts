@@ -101,10 +101,7 @@ export const Shadows = {
       elevation: 4,
     },
     default: {
-      shadowColor: '#142018',
-      shadowOpacity: 0.08,
-      shadowRadius: 18,
-      shadowOffset: { width: 0, height: 8 },
+      boxShadow: '0 8px 18px rgba(20, 32, 24, 0.08)',
     },
   }),
   floating: Platform.select<ViewStyle>({
@@ -118,10 +115,7 @@ export const Shadows = {
       elevation: 8,
     },
     default: {
-      shadowColor: '#142018',
-      shadowOpacity: 0.12,
-      shadowRadius: 24,
-      shadowOffset: { width: 0, height: 12 },
+      boxShadow: '0 12px 24px rgba(20, 32, 24, 0.12)',
     },
   }),
 } as const;

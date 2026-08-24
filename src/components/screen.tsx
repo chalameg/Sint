@@ -17,7 +17,7 @@ export function Screen({ children, padded = true, includeTopSafeArea = false }: 
 
   return (
     <ThemedView style={styles.root}>
-      <View pointerEvents="none" style={styles.ambient} accessibilityElementsHidden>
+      <View style={[styles.ambient, { pointerEvents: 'none' }]} accessibilityElementsHidden>
         <View style={[styles.orb, styles.orbPrimary, { backgroundColor: theme.primary }]} />
         <View style={[styles.orb, styles.orbAccent, { backgroundColor: theme.accent }]} />
       </View>
