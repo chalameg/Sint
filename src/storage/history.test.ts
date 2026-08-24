@@ -20,8 +20,10 @@ describe('mergeHistory', () => {
   it('inserts a new calculation at the front', () => {
     const next = mergeHistory([], salaryDraft);
     expect(next).toHaveLength(1);
-    expect(next[0].kind).toBe('salary');
-    expect(next[0].result.netTakeHome).toBe(10750);
+    expect(next[0]).toMatchObject({
+      kind: 'salary',
+      result: { netTakeHome: 10750 },
+    });
   });
 
   it('replaces the latest entry of the same kind within the edit window', () => {
@@ -34,6 +36,9 @@ describe('mergeHistory', () => {
 
     expect(updated).toHaveLength(1);
     expect(updated[0].id).toBe(first[0].id);
-    expect(updated[0].input.grossMonthly).toBe(20000);
+    expect(updated[0]).toMatchObject({
+      kind: 'salary',
+      input: { grossMonthly: 20000 },
+    });
   });
 });

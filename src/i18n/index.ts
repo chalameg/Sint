@@ -105,7 +105,17 @@ export const en = {
   },
 } as const;
 
-export const am: typeof en = {
+export type TranslationDict = {
+  [K in keyof typeof en]: (typeof en)[K] extends string
+    ? string
+    : {
+        [P in keyof (typeof en)[K]]: (typeof en)[K][P] extends string
+          ? string
+          : { [Q in keyof (typeof en)[K][P]]: string };
+      };
+};
+
+export const am: TranslationDict = {
   appName: 'ስንት?',
   appNameAmharic: 'Sint?',
   tagline: 'ስንት ነው?',
@@ -210,6 +220,4 @@ export const am: typeof en = {
   },
 };
 
-export const dictionaries = { en, am } as const;
-
-export type TranslationDict = typeof en;
+export const dictionaries: Record<Language, TranslationDict> = { en, am };

@@ -13,8 +13,8 @@ describe('calculateLoan', () => {
 
     expect(result).not.toBeNull();
     expect(result!.monthlyPayment).toBeCloseTo(8884.88, 1);
-    expect(result!.totalRepayment).toBeCloseTo(result!.monthlyPayment * 12, 2);
-    expect(result!.totalInterest).toBeCloseTo(result!.totalRepayment - 100_000, 2);
+    expect(result!.totalRepayment).toBe(roundTo(result!.monthlyPayment * 12));
+    expect(result!.totalInterest).toBe(roundTo(result!.totalRepayment - 100_000));
   });
 
   it('splits principal evenly when interest is zero', () => {
@@ -51,3 +51,7 @@ describe('calculateLoan', () => {
     ).toBeNull();
   });
 });
+
+function roundTo(value: number): number {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}

@@ -1,5 +1,4 @@
-import type { TranslationDict } from '@/i18n';
-import type { Language } from '@/i18n';
+import type { Language, TranslationDict } from '@/i18n';
 import type { HistoryDraft, HistoryEntry } from '@/types/history';
 import { formatMoney, formatPercent } from '@/utils/format';
 

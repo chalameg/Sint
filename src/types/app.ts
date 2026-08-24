@@ -1,4 +1,4 @@
-import { dictionaries, type Language, type TranslationDict } from '@/i18n';
+import type { Language, TranslationDict } from '@/i18n';
 import type { HistoryDraft, HistoryEntry } from '@/types/history';
 import type { AppSettings } from '@/storage/keys';
 

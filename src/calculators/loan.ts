@@ -47,15 +47,16 @@ export function calculateLoan(input: LoanInput): LoanResult | null {
 
   if (!Number.isFinite(monthlyPayment)) return null;
 
-  const totalRepayment = monthlyPayment * n;
-  const totalInterest = totalRepayment - principal;
+  const roundedMonthly = roundCurrency(monthlyPayment);
+  const totalRepayment = roundCurrency(roundedMonthly * n);
+  const totalInterest = roundCurrency(totalRepayment - principal);
 
   return {
     principal: roundCurrency(principal),
     monthlyRate,
     months: n,
-    monthlyPayment: roundCurrency(monthlyPayment),
-    totalRepayment: roundCurrency(totalRepayment),
-    totalInterest: roundCurrency(totalInterest),
+    monthlyPayment: roundedMonthly,
+    totalRepayment,
+    totalInterest,
   };
 }
