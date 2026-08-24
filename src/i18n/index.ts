@@ -27,6 +27,10 @@ export const en = {
       title: 'Savings',
       subtitle: 'See what you can set aside',
     },
+    calculator: {
+      title: 'Calculator',
+      subtitle: 'Quick everyday math',
+    },
   },
   common: {
     share: 'Share',
@@ -88,6 +92,18 @@ export const en = {
     finalAmount: 'Final amount',
     totalContributed: 'Total contributed',
     estimatedGain: 'Estimated gain',
+  },
+  calculator: {
+    title: 'Calculator',
+    number: 'Number',
+    money: 'Money',
+    clear: 'Clear',
+    delete: 'Delete',
+    equals: 'Equals',
+    history: 'Recent',
+    emptyHistory: 'Equals saves recent calculations here.',
+    divideByZero: 'Cannot divide by zero.',
+    invalid: 'Check the expression.',
   },
   history: {
     title: 'History',
@@ -152,6 +168,10 @@ export const am: TranslationDict = {
       title: 'ቁጠባ',
       subtitle: 'ምን እንደምታስቀምጡ ይመልከቱ',
     },
+    calculator: {
+      title: 'ካልኩሌተር',
+      subtitle: 'ፈጣን የዕለት ተዕለት ሂሳብ',
+    },
   },
   common: {
     share: 'አጋራ',
@@ -213,6 +233,18 @@ export const am: TranslationDict = {
     finalAmount: 'የመጨረሻ መጠን',
     totalContributed: 'ጠቅላላ አስተዋጽኦ',
     estimatedGain: 'የሚገመት ትርፍ',
+  },
+  calculator: {
+    title: 'ካልኩሌተር',
+    number: 'ቁጥር',
+    money: 'ገንዘብ',
+    clear: 'አጽዳ',
+    delete: 'ሰርዝ',
+    equals: 'እኩል',
+    history: 'የቅርብ ጊዜ',
+    emptyHistory: 'እኩል ሲጫኑ የቅርብ ጊዜ ስሌቶች እዚህ ይቀመጣሉ።',
+    divideByZero: 'በዜሮ መከፋፈል አይቻልም።',
+    invalid: 'አገላለጹን ይፈትሹ።',
   },
   history: {
     title: 'ታሪክ',

@@ -1,45 +1,60 @@
 /**
- * Sint? visual tokens: highland green, warm gold, parchment.
- * Ethiopian identity is in the palette, not in flag decoration.
+ * Sint? visual tokens: dark graphite brand with violet and cyan.
+ * Identity is typographic and tonal, not flag-colored.
  */
 
 import '@/global.css';
 
 import { Platform, type ViewStyle } from 'react-native';
 
+export const Brand = {
+  background: '#0B0D10',
+  surface: 'rgba(255,255,255,0.075)',
+  surfaceStrong: 'rgba(255,255,255,0.12)',
+  text: '#F6F7F9',
+  textSecondary: '#A7ADB7',
+  primary: '#7C5CFF',
+  secondary: '#30D5C8',
+  result: '#F2B84B',
+  danger: '#FF5C70',
+  border: 'rgba(255,255,255,0.11)',
+  onPrimary: '#FFFFFF',
+  salary: '#7C5CFF',
+  vat: '#F2B84B',
+  loan: '#FF5C70',
+  savings: '#30D5C8',
+  calculator: '#6EA8FF',
+} as const;
+
+export function withAlpha(hex: string, alpha: number): string {
+  const raw = hex.replace('#', '');
+  const r = parseInt(raw.slice(0, 2), 16);
+  const g = parseInt(raw.slice(2, 4), 16);
+  const b = parseInt(raw.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+const SintDark = {
+  text: Brand.text,
+  background: Brand.background,
+  backgroundElement: Brand.surfaceStrong,
+  backgroundSelected: withAlpha(Brand.primary, 0.18),
+  glass: Brand.surface,
+  glassStrong: Brand.surfaceStrong,
+  textSecondary: Brand.textSecondary,
+  primary: Brand.primary,
+  primaryMuted: withAlpha(Brand.primary, 0.18),
+  accent: Brand.secondary,
+  accentMuted: withAlpha(Brand.secondary, 0.16),
+  result: Brand.result,
+  border: Brand.border,
+  danger: Brand.danger,
+  onPrimary: Brand.onPrimary,
+} as const;
+
 export const Colors = {
-  light: {
-    text: '#1A1916',
-    background: '#EFEBE3',
-    backgroundElement: 'rgba(255, 252, 247, 0.92)',
-    backgroundSelected: 'rgba(12, 92, 67, 0.12)',
-    glass: 'rgba(255, 252, 247, 0.72)',
-    glassStrong: 'rgba(255, 252, 247, 0.88)',
-    textSecondary: '#6A635A',
-    primary: '#0B5340',
-    primaryMuted: 'rgba(11, 83, 64, 0.12)',
-    accent: '#C4A35A',
-    accentMuted: 'rgba(196, 163, 90, 0.16)',
-    border: 'rgba(26, 25, 22, 0.08)',
-    danger: '#C45C4A',
-    onPrimary: '#FFFFFF',
-  },
-  dark: {
-    text: '#F4EFE6',
-    background: '#0E110F',
-    backgroundElement: 'rgba(28, 34, 29, 0.92)',
-    backgroundSelected: 'rgba(123, 201, 160, 0.16)',
-    glass: 'rgba(28, 34, 29, 0.72)',
-    glassStrong: 'rgba(32, 40, 34, 0.88)',
-    textSecondary: '#B3AAA0',
-    primary: '#7BC9A0',
-    primaryMuted: 'rgba(123, 201, 160, 0.14)',
-    accent: '#D4B36A',
-    accentMuted: 'rgba(212, 179, 106, 0.16)',
-    border: 'rgba(244, 239, 230, 0.08)',
-    danger: '#E08B7C',
-    onPrimary: '#0E110F',
-  },
+  light: SintDark,
+  dark: SintDark,
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
@@ -92,30 +107,30 @@ export const Motion = {
 export const Shadows = {
   card: Platform.select<ViewStyle>({
     ios: {
-      shadowColor: '#142018',
-      shadowOpacity: 0.1,
+      shadowColor: '#000000',
+      shadowOpacity: 0.35,
       shadowRadius: 22,
       shadowOffset: { width: 0, height: 10 },
     },
     android: {
-      elevation: 4,
+      elevation: 6,
     },
     default: {
-      boxShadow: '0 8px 18px rgba(20, 32, 24, 0.08)',
+      boxShadow: '0 12px 28px rgba(0, 0, 0, 0.38)',
     },
   }),
   floating: Platform.select<ViewStyle>({
     ios: {
-      shadowColor: '#142018',
-      shadowOpacity: 0.14,
+      shadowColor: '#000000',
+      shadowOpacity: 0.45,
       shadowRadius: 28,
       shadowOffset: { width: 0, height: 14 },
     },
     android: {
-      elevation: 8,
+      elevation: 10,
     },
     default: {
-      boxShadow: '0 12px 24px rgba(20, 32, 24, 0.12)',
+      boxShadow: '0 16px 36px rgba(0, 0, 0, 0.45)',
     },
   }),
 } as const;

@@ -61,7 +61,7 @@ export default function LoanScreen() {
 
   return (
     <Screen>
-      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.loan.subtitle} tone={visual.tone} />
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.loan.subtitle} accent={visual.accent} />
 
       <NumberField
         label={copy.loan.amountLabel}

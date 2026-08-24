@@ -67,7 +67,7 @@ export default function SavingsScreen() {
 
   return (
     <Screen>
-      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.savings.subtitle} tone={visual.tone} />
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.savings.subtitle} accent={visual.accent} />
 
       <NumberField
         label={copy.savings.initialLabel}

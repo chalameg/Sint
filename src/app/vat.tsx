@@ -58,7 +58,7 @@ export default function VatScreen() {
 
   return (
     <Screen>
-      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.vat.subtitle} tone={visual.tone} />
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.vat.subtitle} accent={visual.accent} />
 
       <SegmentedControl
         value={mode}

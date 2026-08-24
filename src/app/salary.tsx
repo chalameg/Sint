@@ -46,7 +46,7 @@ export default function SalaryScreen() {
 
   return (
     <Screen>
-      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.salary.subtitle} tone={visual.tone} />
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.salary.subtitle} accent={visual.accent} />
 
       <NumberField
         label={copy.salary.grossLabel}
