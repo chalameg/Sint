@@ -4,6 +4,7 @@ import { DEFAULT_TAXABLE_INCOME_MODE, type TaxableIncomeMode } from '@/config/et
 export const STORAGE_KEYS = {
   settings: 'sint.settings.v1',
   history: 'sint.history.v1',
+  arithmeticHistory: 'sint.arithmetic-history.v1',
 } as const;
 
 export type AppSettings = {

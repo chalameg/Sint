@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { STORAGE_KEYS } from '@/storage/keys';
+
 export type ArithmeticHistoryEntry = {
   id: string;
   expression: string;
@@ -7,7 +9,7 @@ export type ArithmeticHistoryEntry = {
   createdAt: number;
 };
 
-const STORAGE_KEY = 'sint.arithmetic-history.v1';
+const STORAGE_KEY = STORAGE_KEYS.arithmeticHistory;
 export const MAX_ARITHMETIC_HISTORY = 20;
 
 function createId(): string {
