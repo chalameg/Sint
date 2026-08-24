@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
 import { GlassSurface } from '@/components/glass-surface';
@@ -27,7 +27,10 @@ export function CalculatorCard({
 }: CalculatorCardProps) {
   const theme = useTheme();
   const reduceMotion = useReducedMotion();
-  const entering = reduceMotion ? undefined : FadeInDown.duration(Motion.slow).delay(delay).springify().damping(18);
+  const entering =
+    Platform.OS === 'web' || reduceMotion
+      ? undefined
+      : FadeInDown.duration(Motion.slow).delay(delay).springify().damping(18);
 
   return (
     <Animated.View entering={entering} style={styles.pressable}>

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition, useReducedMotion } from 'react-native-reanimated';
 
 import { GlassSurface } from '@/components/glass-surface';
@@ -26,9 +26,9 @@ type ResultPanelProps = {
 export function ResultPanel({ title, hero, rows, footer, emptyLabel }: ResultPanelProps) {
   const theme = useTheme();
   const reduceMotion = useReducedMotion();
-  const entering = reduceMotion ? undefined : FadeIn.duration(Motion.base);
-  const exiting = reduceMotion ? undefined : FadeOut.duration(Motion.fast);
-  const layout = reduceMotion ? undefined : LinearTransition.duration(Motion.base);
+  const entering = Platform.OS === 'web' || reduceMotion ? undefined : FadeIn.duration(Motion.base);
+  const exiting = Platform.OS === 'web' || reduceMotion ? undefined : FadeOut.duration(Motion.fast);
+  const layout = Platform.OS === 'web' || reduceMotion ? undefined : LinearTransition.duration(Motion.base);
 
   return (
     <GlassSurface strong={Boolean(hero)} style={[styles.card, hero ? { borderColor: theme.result } : null]}>
