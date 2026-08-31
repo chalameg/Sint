@@ -1,8 +1,8 @@
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppProvider, useApp } from '@/context/app-context';
@@ -13,6 +13,7 @@ SplashScreen.preventAutoHideAsync();
 function RootNavigator() {
   const { ready, copy } = useApp();
   const theme = useTheme();
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (ready) {
@@ -23,6 +24,7 @@ function RootNavigator() {
   return (
     <Stack
       screenOptions={{
+        animation: reduceMotion ? 'none' : 'slide_from_right',
         headerShadowVisible: false,
         headerTintColor: theme.primary,
         headerStyle: { backgroundColor: theme.background },
@@ -30,6 +32,7 @@ function RootNavigator() {
         contentStyle: { backgroundColor: theme.background },
       }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="calculator" options={{ title: copy.calculator.title }} />
       <Stack.Screen name="salary" options={{ title: copy.salary.title }} />
       <Stack.Screen name="loan" options={{ title: copy.loan.title }} />
       <Stack.Screen name="vat" options={{ title: copy.vat.title }} />
@@ -39,13 +42,11 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DarkTheme}>
       <SafeAreaProvider>
         <AppProvider>
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          <StatusBar style="light" />
           <RootNavigator />
         </AppProvider>
       </SafeAreaProvider>

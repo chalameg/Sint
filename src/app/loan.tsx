@@ -4,8 +4,10 @@ import { calculateLoan } from '@/calculators/loan';
 import { NumberField } from '@/components/number-field';
 import { ResultPanel, ShareButton } from '@/components/result-panel';
 import { Screen } from '@/components/screen';
+import { ScreenHeader } from '@/components/screen-header';
 import { SegmentedControl } from '@/components/segmented-control';
 import { ThemedText } from '@/components/themed-text';
+import { CALCULATOR_VISUALS } from '@/constants/calculators';
 import { useApp } from '@/context/app-context';
 import { useHistorySave } from '@/hooks/use-history-save';
 import { useShareResult } from '@/hooks/use-share-result';
@@ -22,6 +24,7 @@ export default function LoanScreen() {
   const [rate, setRate] = useState('');
   const [duration, setDuration] = useState('');
   const [unit, setUnit] = useState<DurationUnit>('months');
+  const visual = CALCULATOR_VISUALS.loan;
 
   const amountHint = hintForAmount(amount, copy);
   const rateHint = hintForRate(rate, copy);
@@ -58,6 +61,8 @@ export default function LoanScreen() {
 
   return (
     <Screen>
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.loan.subtitle} accent={visual.accent} />
+
       <NumberField
         label={copy.loan.amountLabel}
         value={amount}
@@ -92,34 +97,40 @@ export default function LoanScreen() {
         ]}
       />
 
-      {result ? (
-        <ResultPanel
-          title={copy.common.results}
-          rows={[
-            {
-              label: copy.loan.monthlyPayment,
-              value: formatMoney(result.monthlyPayment, language),
-              emphasize: true,
-            },
-            {
-              label: copy.loan.totalRepayment,
-              value: formatMoney(result.totalRepayment, language),
-            },
-            {
-              label: copy.loan.totalInterest,
-              value: formatMoney(result.totalInterest, language),
-            },
-          ]}
-          footer={
-            draft ? (
-              <ShareButton
-                label={copy.common.share}
-                onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
-              />
-            ) : null
-          }
-        />
-      ) : null}
+      <ResultPanel
+        title={copy.common.breakdown}
+        emptyLabel={copy.common.enterAmount}
+        hero={
+          result
+            ? {
+                label: copy.loan.monthlyPayment,
+                value: formatMoney(result.monthlyPayment, language),
+              }
+            : undefined
+        }
+        rows={
+          result
+            ? [
+                {
+                  label: copy.loan.totalRepayment,
+                  value: formatMoney(result.totalRepayment, language),
+                },
+                {
+                  label: copy.loan.totalInterest,
+                  value: formatMoney(result.totalInterest, language),
+                },
+              ]
+            : []
+        }
+        footer={
+          draft ? (
+            <ShareButton
+              label={copy.common.share}
+              onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
+            />
+          ) : null
+        }
+      />
 
       <ThemedText type="small" themeColor="textSecondary">
         {copy.common.estimateNote}

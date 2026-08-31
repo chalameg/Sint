@@ -1,53 +1,53 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
+import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
 
 import { CalculatorCard } from '@/components/calculator-card';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { CALCULATOR_ORDER, CALCULATOR_VISUALS } from '@/constants/calculators';
+import { Motion, Spacing } from '@/constants/theme';
 import { useApp } from '@/context/app-context';
+import { useTheme } from '@/hooks/use-theme';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { copy } = useApp();
+  const theme = useTheme();
+  const reduceMotion = useReducedMotion();
+  const headerEntering =
+    Platform.OS === 'web' || reduceMotion
+      ? undefined
+      : FadeInDown.duration(Motion.slow).springify().damping(18);
 
   return (
     <Screen includeTopSafeArea>
-      <View style={styles.hero}>
-        <ThemedText type="label" themeColor="primary">
+      <Animated.View entering={headerEntering} style={styles.hero}>
+        <ThemedText type="smallBold" style={{ color: theme.primary }}>
           {copy.appNameAmharic}
         </ThemedText>
         <ThemedText type="title">{copy.appName}</ThemedText>
         <ThemedText type="default" themeColor="textSecondary">
           {copy.subtitle}
         </ThemedText>
-      </View>
+      </Animated.View>
 
       <View style={styles.cards}>
-        <CalculatorCard
-          title={copy.calculators.salary.title}
-          subtitle={copy.calculators.salary.subtitle}
-          icon="wallet-outline"
-          onPress={() => router.push('/salary')}
-        />
-        <CalculatorCard
-          title={copy.calculators.loan.title}
-          subtitle={copy.calculators.loan.subtitle}
-          icon="card-outline"
-          onPress={() => router.push('/loan')}
-        />
-        <CalculatorCard
-          title={copy.calculators.vat.title}
-          subtitle={copy.calculators.vat.subtitle}
-          icon="receipt-outline"
-          onPress={() => router.push('/vat')}
-        />
-        <CalculatorCard
-          title={copy.calculators.savings.title}
-          subtitle={copy.calculators.savings.subtitle}
-          icon="leaf-outline"
-          onPress={() => router.push('/savings')}
-        />
+        {CALCULATOR_ORDER.map((kind, index) => {
+          const visual = CALCULATOR_VISUALS[kind];
+          const item = copy.calculators[kind];
+          return (
+            <CalculatorCard
+              key={kind}
+              title={item.title}
+              subtitle={item.subtitle}
+              icon={visual.icon}
+              accent={visual.accent}
+              delay={80 + index * 70}
+              onPress={() => router.push(visual.href)}
+            />
+          );
+        })}
       </View>
     </Screen>
   );
@@ -56,7 +56,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   hero: {
     gap: Spacing.one,
-    marginBottom: Spacing.two,
+    marginBottom: Spacing.one,
   },
   cards: {
     gap: Spacing.three,

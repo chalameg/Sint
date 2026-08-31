@@ -17,7 +17,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: theme.primary,
         tabBarInactiveTintColor: theme.textSecondary,
         tabBarStyle: {
-          backgroundColor: theme.backgroundElement,
+          backgroundColor: theme.glassStrong,
           borderTopColor: theme.border,
         },
       }}>
@@ -26,8 +26,8 @@ export default function TabLayout() {
         options={{
           title: copy.tabs.home,
           headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size} />
           ),
         }}
       />
@@ -35,8 +35,8 @@ export default function TabLayout() {
         name="history"
         options={{
           title: copy.tabs.history,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="time-outline" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'time' : 'time-outline'} color={color} size={size} />
           ),
         }}
       />
@@ -44,8 +44,8 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: copy.tabs.settings,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={size} />
           ),
         }}
       />

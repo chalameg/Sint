@@ -1,5 +1,6 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
+import { GlassSurface } from '@/components/glass-surface';
 import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -23,12 +24,14 @@ export function SegmentedControl<T extends string>({
   const theme = useTheme();
 
   return (
-    <View style={[styles.row, { backgroundColor: theme.backgroundElement, borderColor: theme.border }]}>
+    <GlassSurface strong elevated={false} style={styles.row}>
       {options.map((option) => {
         const selected = option.value === value;
         return (
           <Pressable
             key={option.value}
+            accessibilityRole="button"
+            accessibilityState={{ selected }}
             onPress={() => onChange(option.value)}
             style={[
               styles.option,
@@ -42,7 +45,7 @@ export function SegmentedControl<T extends string>({
           </Pressable>
         );
       })}
-    </View>
+    </GlassSurface>
   );
 }
 
@@ -50,7 +53,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     borderRadius: Radius.md,
-    borderWidth: 1,
     padding: 4,
     gap: 4,
   },

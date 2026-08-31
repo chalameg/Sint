@@ -6,4 +6,15 @@
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
+  --sint-bg: #0b0d10;
+}
+
+html,
+body,
+#root {
+  background:
+    radial-gradient(1100px 560px at 88% -8%, rgba(124, 92, 255, 0.28), transparent 58%),
+    radial-gradient(820px 480px at -12% 92%, rgba(48, 213, 200, 0.16), transparent 52%),
+    var(--sint-bg);
+  color: #f6f7f9;
 }

@@ -5,8 +5,10 @@ import { calculateSalary } from '@/calculators/salary';
 import { NumberField } from '@/components/number-field';
 import { ResultPanel, ShareButton } from '@/components/result-panel';
 import { Screen } from '@/components/screen';
+import { ScreenHeader } from '@/components/screen-header';
 import { SegmentedControl } from '@/components/segmented-control';
 import { ThemedText } from '@/components/themed-text';
+import { CALCULATOR_VISUALS } from '@/constants/calculators';
 import { Spacing } from '@/constants/theme';
 import type { TaxableIncomeMode } from '@/config/ethiopia';
 import { useApp } from '@/context/app-context';
@@ -22,6 +24,7 @@ export default function SalaryScreen() {
   const share = useShareResult();
   const [gross, setGross] = useState('');
   const mode = settings.taxableIncomeMode;
+  const visual = CALCULATOR_VISUALS.salary;
 
   const parsedGross = parseAmount(gross);
   const result =
@@ -43,6 +46,8 @@ export default function SalaryScreen() {
 
   return (
     <Screen>
+      <ScreenHeader icon={visual.icon} subtitle={copy.calculators.salary.subtitle} accent={visual.accent} />
+
       <NumberField
         label={copy.salary.grossLabel}
         value={gross}
@@ -70,43 +75,49 @@ export default function SalaryScreen() {
         </ThemedText>
       </View>
 
-      {result ? (
-        <ResultPanel
-          title={copy.common.results}
-          rows={[
-            { label: copy.salary.taxableIncome, value: formatMoney(result.taxableIncome, language) },
-            { label: copy.salary.incomeTax, value: formatMoney(result.incomeTax, language) },
-            {
-              label: copy.salary.employeePension,
-              value: formatMoney(result.employeePension, language),
-            },
-            {
-              label: copy.salary.employerPension,
-              value: formatMoney(result.employerPension, language),
-            },
-            {
-              label: copy.salary.netTakeHome,
-              value: formatMoney(result.netTakeHome, language),
-              emphasize: true,
-            },
-            {
-              label: copy.salary.effectiveRate,
-              value: formatPercent(result.effectiveTaxRate, language),
-            },
-          ]}
-          footer={
-            draft ? (
-              <ShareButton
-                label={copy.common.share}
-                onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
-              />
-            ) : null
-          }
-        />
-      ) : null}
+      <ResultPanel
+        title={copy.common.breakdown}
+        emptyLabel={copy.common.enterAmount}
+        hero={
+          result
+            ? {
+                label: copy.salary.netTakeHome,
+                value: formatMoney(result.netTakeHome, language),
+              }
+            : undefined
+        }
+        rows={
+          result
+            ? [
+                { label: copy.salary.taxableIncome, value: formatMoney(result.taxableIncome, language) },
+                { label: copy.salary.incomeTax, value: formatMoney(result.incomeTax, language) },
+                {
+                  label: copy.salary.employeePension,
+                  value: formatMoney(result.employeePension, language),
+                },
+                {
+                  label: copy.salary.employerPension,
+                  value: formatMoney(result.employerPension, language),
+                },
+                {
+                  label: copy.salary.effectiveRate,
+                  value: formatPercent(result.effectiveTaxRate, language),
+                },
+              ]
+            : []
+        }
+        footer={
+          draft ? (
+            <ShareButton
+              label={copy.common.share}
+              onPress={() => void share(copy.appName, formatShareMessage(draft, language, copy))}
+            />
+          ) : null
+        }
+      />
 
       <ThemedText type="small" themeColor="textSecondary">
-        {copy.salary.disclaimer}
+        {copy.common.estimateNote}
       </ThemedText>
     </Screen>
   );

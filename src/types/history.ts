@@ -3,7 +3,8 @@ import type { SalaryInput, SalaryResult } from '@/calculators/salary';
 import type { SavingsInput, SavingsResult } from '@/calculators/savings';
 import type { VatInput, VatResult } from '@/calculators/vat';
 
-export type CalculatorKind = 'salary' | 'loan' | 'vat' | 'savings';
+export type FinanceKind = 'salary' | 'loan' | 'vat' | 'savings';
+export type CalculatorKind = FinanceKind | 'calculator';
 
 export type HistoryDraft =
   | {
