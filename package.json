@@ -43,7 +43,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:apk": "eas build -p android --profile preview"
   },
   "private": true
 }

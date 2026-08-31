@@ -9,9 +9,12 @@
     "userInterfaceStyle": "dark",
     "ios": {
       "icon": "./assets/expo.icon",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chalameg.sint"
     },
     "android": {
+      "package": "com.chalameg.sint",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#0E6B4C",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
